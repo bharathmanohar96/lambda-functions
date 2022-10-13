@@ -1,0 +1,25 @@
+import json
+import boto3
+import time
+# current_time = datetime.datetime.now()
+curr_time = time.strftime("%H-%M-%S", time.localtime())
+# import os
+# region = os.environ['MY_ENV_VAR']
+client = boto3.client('ec2')
+def lambda_handler(event, context):
+    response = client.describe_instances(
+        Filters=[ 
+            {'Name': "tag:Name", 'Values':['Ansible','Ansible_new']}
+        ]
+    )
+    for i in response["Reservations"]:
+        for j in i["Instances"]:
+            for k in j["Tags"]:
+                Instance_name = k["Value"]
+                Instance_ID = j["InstanceId"]
+            # print(j["Tags[Key]"])
+                ami_backup = client.create_image(
+                InstanceId=Instance_ID,
+                Name = Instance_name + "-" + str(curr_time) 
+                )
+                print(ami_backup)
