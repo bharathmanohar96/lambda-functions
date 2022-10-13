@@ -1,0 +1,21 @@
+import json
+import boto3
+import datetime
+now = datetime.datetime.now()
+ 
+client = boto3.client('ec2')
+def lambda_handler(event, context):
+    response = client.describe_instances(
+        Filters=[ 
+            {'Name': "tag:Name", 'Values':['Ansible','Ansible_new','Jenkins']}
+        ]
+    )
+    for i in response["Reservations"]:
+        for j in i["Instances"]:
+            instance_tag_name = j["Tags"][0]["Value"]
+            instance_id = j["InstanceId"]
+            ami_backup = client.create_image(
+                InstanceId=instance_id,
+                Name = instance_tag_name + "-" + now.strftime('%Y-%m-%d-%I-%M-%S')
+            )
+            print(ami_backup)
