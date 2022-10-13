@@ -1,0 +1,28 @@
+import json
+import boto3
+import sys
+import pprint
+ec2 = boto3.resource('ec2')
+client = boto3.client('ec2')
+from datetime import datetime
+now = datetime.now()
+dt_string = now.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+print("date and time =", dt_string)
+
+
+def lambda_handler(event, context):
+    response = client.describe_images(Owners=['self'])
+    #print(response['Images']["ImageId"])
+    for i in response["Images"]:
+        if (i['CreationDate']) < "2022-10-13T14:32:02.000Z":
+            print(i['CreationDate'])
+
+        # ami_creation_time = i['CreationDate']
+       
+        
+    
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
