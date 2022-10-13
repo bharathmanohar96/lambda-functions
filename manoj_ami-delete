@@ -1,0 +1,15 @@
+import json
+import boto3
+from datetime import datetime, timedelta
+# now = datetime.datetime.now()
+
+
+client = boto3.client('ec2')
+def lambda_handler(event, context):
+    print("Current time: ", datetime.now())
+    print(datetime.now()  - timedelta(days=5, hours=-5))
+    # response = client.describe_images(Owners=['self'])
+    # for i in response["Images"]:
+    #     # print(i["CreationDate"])
+    #     if i["CreationDate"] < "2022-10-13T14:56:59.635Z":
+    #         print(i["CreationDate"])
